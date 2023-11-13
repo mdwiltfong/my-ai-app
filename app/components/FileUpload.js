@@ -33,7 +33,7 @@ function FileUpload() {
 
   return (
     <div className='flex flex-col gap-2 mb-4'>
-      <input type='file' accept='pdf' onChange={handleFileChange} />
+      <input type='file' accept='.pdf' onChange={handleFileChange} />
 
       <div>{file && `${file.name} - ${file.type}`}</div>
 
