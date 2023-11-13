@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@gadget-client/my-ai-app-mdw": "^1.34.0",
+    "@gadget-client/doc-inspector": "^1.382.0",
     "@gadgetinc/react": "^0.14.15",
     "ai": "^2.2.22",
     "next": "14.0.2",
