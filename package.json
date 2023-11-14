@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watch"
+    "test": "jest"
   },
   "dependencies": {
     "@gadget-client/doc-inspector": "^1.382.0",
