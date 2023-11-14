@@ -20,7 +20,7 @@ describe('App', () => {
 
     const inputElement = screen.getByRole('textbox');
     await userEvent.type(inputElement, 'Hello, World!')
-    console.log(inputElement.value)
+
     expect(inputElement.value).toEqual('Hello, World!');
   });
 });
