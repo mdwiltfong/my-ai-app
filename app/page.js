@@ -8,7 +8,7 @@ export default function App() {
 
   return (
     <div className="mx-auto w-full max-w-md py-24 flex flex-col stretch">
-      <form name="userChat" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <input
           className="fixed w-full max-w-md bottom-0 border border-gray-300 rounded mb-8 shadow-xl p-2 dark:text-black"
           value={input}
