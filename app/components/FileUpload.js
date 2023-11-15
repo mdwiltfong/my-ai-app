@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useAction } from '@gadgetinc/react';
-import api from '../../api';
+import { api } from '../../api';
 import { Button, Typography } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
@@ -9,7 +9,7 @@ function FileUpload({type}) {
   const [file, setFile] = useState('');
   const [{ data, error, fetching }, create] = useAction(api.document.create);
   const filetype = type === 'pdf' ? '.pdf' : '.md';
-  
+
   const handleFileChange = (e) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
