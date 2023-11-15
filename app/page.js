@@ -4,7 +4,7 @@ import { useCompletion } from 'ai/react';
 import FileUpload from './components/FileUpload';
 import { Card } from '@mui/material';
 
-export default function DocInspector() {
+export default function App() {
   const { completion, input, handleInputChange, handleSubmit } =
     useCompletion();
 
@@ -20,7 +20,7 @@ export default function DocInspector() {
         <FileCard type='pdf' />
         <FileCard type='md' />
       </div>
-      <form onSubmit={handleSubmit} className="w-full flex justify-center">
+    <form role="form" onSubmit={handleSubmit} className="w-full flex justify-center">
         <input
           className='fixed w-full max-w-md bottom-0 border border-gray-300 rounded mb-8 shadow-xl p-2 dark:text-black'
           value={input}
