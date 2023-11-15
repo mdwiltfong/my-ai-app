@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useAction } from '@gadgetinc/react';
 import api from '../../api';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 function FileUpload() {
@@ -33,6 +33,7 @@ function FileUpload() {
 
   return (
     <div className='flex flex-col gap-2 mb-4'>
+      <Typography>Upload a PDF</Typography>
       <input type='file' accept='.pdf' onChange={handleFileChange} />
 
       <div>{file && `${file.name} - ${file.type}`}</div>
