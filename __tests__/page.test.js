@@ -5,10 +5,10 @@ import App from '@/app/page';
 import { Provider } from '@gadgetinc/react';
 import { api } from '../api';
 
-// describe('App', () => {
-//   it('does nothing', () => {
-//     render(<App />);
-//   });
+describe('App', () => {
+  it('does nothing', () => {
+    render(<App />);
+  });
   // it('renders a form', () => {
   //   render(
   //     <Provider api={api}>
@@ -31,7 +31,7 @@ import { api } from '../api';
 
   //   expect(inputElement.value).toEqual('Hello, World!');
   // });
-// });
+});
 
 // describe('App', () => {
 //   it('renders a button', () => {
