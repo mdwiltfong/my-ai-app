@@ -1,36 +1,36 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import userEvent from '@testing-library/user-event';
-import App from '@/app/page';
-import { Provider } from '@gadgetinc/react';
-import { api } from '../api';
+import { render, screen, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import userEvent from "@testing-library/user-event";
+import App from "@/app/page";
+import { Provider } from "@gadgetinc/react";
+import { api } from "../api";
 
-describe('App', () => {
-  it('does nothing', () => {
+describe("App", () => {
+  /*  it('does nothing', () => {
     render(<App />);
+  }); */
+  it.only("renders a form", () => {
+    render(
+      <Provider api={api}>
+        <App />
+      </Provider>
+    );
+    expect(screen.getByRole("form")).toBeInTheDocument();
   });
-  // it('renders a form', () => {
-  //   render(
-  //     <Provider api={api}>
-  //       <App />
-  //     </Provider>
-  //   );
-  //   expect(screen.getByRole('form')).toBeInTheDocument();
-  // });
 
-  // it('renders an input', () => {
-  //   render(<App />);
-  //   expect(screen.getByRole('textbox')).toBeInTheDocument();
-  // });
+  it("renders an input", () => {
+    render(<App />);
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
+  });
 
-  // it('allows the user to type into the input', async () => {
-  //   render(<App />);
+  it("allows the user to type into the input", async () => {
+    render(<App />);
 
-  //   const inputElement = screen.getByRole('textbox');
-  //   await userEvent.type(inputElement, 'Hello, World!');
+    const inputElement = screen.getByRole("textbox");
+    await userEvent.type(inputElement, "Hello, World!");
 
-  //   expect(inputElement.value).toEqual('Hello, World!');
-  // });
+    expect(inputElement.value).toEqual("Hello, World!");
+  });
 });
 
 // describe('App', () => {
