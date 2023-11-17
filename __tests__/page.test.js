@@ -9,7 +9,7 @@ describe("App", () => {
   /*  it('does nothing', () => {
     render(<App />);
   }); */
-  it.only("renders a form", () => {
+  it("renders a form", () => {
     render(
       <Provider api={api}>
         <App />
@@ -19,12 +19,20 @@ describe("App", () => {
   });
 
   it("renders an input", () => {
-    render(<App />);
+    render(
+      <Provider api={api}>
+        <App />
+      </Provider>
+    );
     expect(screen.getByRole("textbox")).toBeInTheDocument();
   });
 
   it("allows the user to type into the input", async () => {
-    render(<App />);
+    render(
+      <Provider api={api}>
+        <App />
+      </Provider>
+    );
 
     const inputElement = screen.getByRole("textbox");
     await userEvent.type(inputElement, "Hello, World!");
