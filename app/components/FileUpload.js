@@ -3,11 +3,14 @@ import { useState } from 'react';
 import { useAction } from '@gadgetinc/react';
 import { api } from '../../api';
 import { Button, Typography } from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
+import LoadingButton from '@mui/lab/LoadingButton';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 
 function FileUpload({ type }) {
   const [file, setFile] = useState('');
+  const [newUpload, setNewUpload] = useState(true);
   const [{ data, error, fetching }, create] = useAction(api.document.create);
   const filetype = type === 'pdf' ? '.pdf' : '.md';
 
@@ -23,6 +26,7 @@ function FileUpload({ type }) {
     }
 
     try {
+      setNewUpload(false);
       await create({
         file: {
           file: file,
@@ -48,8 +52,8 @@ function FileUpload({ type }) {
   return (
     <div className='flex flex-col gap-2 mb-4 items-center'>
       <Typography>Upload a {type} file</Typography>
-      {/* <input type='file' accept={filetype} onChange={handleFileChange} /> */}
 
+      {/* Upload button */}
       <Button
         component='label'
         variant='contained'
@@ -60,11 +64,17 @@ function FileUpload({ type }) {
           type='file'
           accept={filetype}
           onChange={handleFileChange}
+          onClick={() => {
+            setFile('');
+            setNewUpload(true);
+          }}
         />
       </Button>
+
+      {/* File name - only show before uploading */}
       <div className='flex flex-row flex-nowrap my-2 w-full justify-between items-center'>
-        <p>{file && file.name}</p>{' '}
-        {file && (
+        <p>{file && !fetching && newUpload === true && file.name}</p>{' '}
+        {file && !fetching && newUpload === true && (
           <a
             className='cursor-pointer font-bold text-red-800 py-1 px-2 mx-2'
             onClick={() => {
@@ -75,16 +85,35 @@ function FileUpload({ type }) {
           </a>
         )}
       </div>
-      <Button
-        component='label'
-        variant='contained'
-        disabled={file === ''}
-        className='bg-indigo-900 hover:bg-indigo-800'
-        onClick={handleUploadClick}
-      >
-        Upload
-      </Button>
-      {data && <p>Uploaded: {data.filename}</p>}
+
+      {/* Upload button - only show when there is a file to be uploaded */}
+      {file ? (
+        fetching ? (
+          <LoadingButton
+            loading
+            loadingPosition='start'
+            startIcon={<SaveIcon />}
+            variant='outlined'
+          >
+            Uploading
+          </LoadingButton>
+        ) : (
+          newUpload === true && (
+            <Button
+              component='label'
+              variant='contained'
+              disabled={file === ''}
+              className='bg-indigo-900 hover:bg-indigo-800'
+              onClick={handleUploadClick}
+            >
+              Upload
+            </Button>
+          )
+        )
+      ) : null}
+
+      {/* Uploaded file name - only show after uploading */}
+      {(data && !fetching && newUpload === false) && <p className='my-2'>Uploaded: {file.name}</p>}
     </div>
   );
 }
