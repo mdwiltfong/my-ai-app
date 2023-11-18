@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { FileContext } from '../fileDetails';
 import { useAction } from '@gadgetinc/react';
 import { api } from '../../api';
 import { Button, Typography } from '@mui/material';
@@ -9,19 +10,27 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 
 function FileUpload({ type }) {
-  const [file, setFile] = useState('');
+  const { file, setFile } = useContext(FileContext);
   const [newUpload, setNewUpload] = useState(true);
   const [{ data, error, fetching }, create] = useAction(api.document.create);
-  const filetype = type === 'pdf' ? '.pdf' : '.md';
+  const filetype = `.${type}`;
+
+
+  useEffect(() => {
+    console.log(file[type])
+    console.log('File changed:');
+    console.log(file);
+  }, [file]);
 
   const handleFileChange = (e) => {
     if (e.target.files) {
-      setFile(e.target.files[0]);
+      console.log(e.target.files[0]);
+      setFile({ ...file, [type]: e.target.files[0] });
     }
   };
 
   const handleUploadClick = async () => {
-    if (!file) {
+    if (!file.type) {
       return;
     }
 
@@ -29,7 +38,7 @@ function FileUpload({ type }) {
       setNewUpload(false);
       await create({
         file: {
-          file: file,
+          file: file.type,
         },
       });
     } catch (error) {
@@ -59,26 +68,26 @@ function FileUpload({ type }) {
         variant='contained'
         startIcon={<CloudUploadIcon />}
       >
-        {file === '' ? 'Upload' : 'Change'} file
+        {file[type] === '' ? 'Upload' : 'Change'} file
         <VisuallyHiddenInput
           type='file'
           accept={filetype}
           onChange={handleFileChange}
           onClick={() => {
-            setFile('');
+            // setFile({ ...file, [type]: '' });
             setNewUpload(true);
           }}
         />
       </Button>
 
       {/* File name - only show before uploading */}
-      <div className='flex flex-row flex-nowrap my-2 w-full justify-between items-center'>
-        <p>{file && !fetching && newUpload === true && file.name}</p>{' '}
-        {file && !fetching && newUpload === true && (
+      <div className='flex flex-row flex-nowrap my-2 w-full justify-center items-center'>
+        <p>{file[type] && !fetching && newUpload === true && file[type].name}</p>{' '}
+        {file[type] && !fetching && newUpload === true && (
           <a
-            className='cursor-pointer font-bold text-red-800 py-1 px-2 mx-2'
+            className='cursor-pointer font-bold text-red-800 py-1 px-2 ml-2'
             onClick={() => {
-              setFile('');
+              setFile({ ...file, [type]: '' });
             }}
           >
             X
@@ -87,7 +96,7 @@ function FileUpload({ type }) {
       </div>
 
       {/* Upload button - only show when there is a file to be uploaded */}
-      {file ? (
+      {file[type] ? (
         fetching ? (
           <LoadingButton
             loading
@@ -102,8 +111,8 @@ function FileUpload({ type }) {
             <Button
               component='label'
               variant='contained'
-              disabled={file === ''}
-              className='bg-indigo-900 hover:bg-indigo-800'
+              disabled={file.type === ''}
+              className='bg-green-700 hover:bg-green-800'
               onClick={handleUploadClick}
             >
               Upload
@@ -113,7 +122,9 @@ function FileUpload({ type }) {
       ) : null}
 
       {/* Uploaded file name - only show after uploading */}
-      {(data && !fetching && newUpload === false) && <p className='my-2'>Uploaded: {file.name}</p>}
+      {data && !fetching && newUpload === false && (
+        <p className='my-2'>Uploaded: {file.type.name}</p>
+      )}
     </div>
   );
 }
