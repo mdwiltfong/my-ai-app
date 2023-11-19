@@ -23,9 +23,18 @@ export default function FileUpload({ type }) {
   // }, [file]);
 
   const handleFileChange = (e) => {
-    if (e.target.files) {
-      console.log(e.target.files[0]);
-      setFile({ ...file, [type]: e.target.files[0] });
+    const singleFile = e.target.files[0]
+    if (singleFile) {
+      console.log(singleFile);
+      setFile({ ...file, [type]: singleFile });
+    }
+    if (type === 'md') {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        setFile({...file, template: e.target.result});
+        console.log(file.template);
+      };
+      reader.readAsText(singleFile);
     }
   };
 
