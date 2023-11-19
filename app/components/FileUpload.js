@@ -9,18 +9,18 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 
-function FileUpload({ type }) {
+export default function FileUpload({ type }) {
   const { file, setFile } = useContext(FileContext);
   const [newUpload, setNewUpload] = useState(true);
   const [{ data, error, fetching }, create] = useAction(api.document.create);
   const filetype = `.${type}`;
 
 
-  useEffect(() => {
-    console.log(file[type])
-    console.log('File changed:');
-    console.log(file);
-  }, [file]);
+  // useEffect(() => {
+  //   console.log(file[type])
+  //   console.log('File changed:');
+  //   console.log(file);
+  // }, [file]);
 
   const handleFileChange = (e) => {
     if (e.target.files) {
@@ -30,7 +30,7 @@ function FileUpload({ type }) {
   };
 
   const handleUploadClick = async () => {
-    if (!file.type) {
+    if (!file[type]) {
       return;
     }
 
@@ -38,7 +38,7 @@ function FileUpload({ type }) {
       setNewUpload(false);
       await create({
         file: {
-          file: file.type,
+          file: file[type],
         },
       });
     } catch (error) {
@@ -111,7 +111,7 @@ function FileUpload({ type }) {
             <Button
               component='label'
               variant='contained'
-              disabled={file.type === ''}
+              disabled={file[type] === ''}
               className='bg-green-700 hover:bg-green-800'
               onClick={handleUploadClick}
             >
@@ -123,10 +123,8 @@ function FileUpload({ type }) {
 
       {/* Uploaded file name - only show after uploading */}
       {data && !fetching && newUpload === false && (
-        <p className='my-2'>Uploaded: {file.type.name}</p>
+        <p className='my-2'>Uploaded: {file[type].name}</p>
       )}
     </div>
   );
 }
-
-export default FileUpload;

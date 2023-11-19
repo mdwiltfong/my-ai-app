@@ -1,12 +1,27 @@
 'use client';
-import { useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useCompletion } from 'ai/react';
 import FileUpload from './components/FileUpload';
-// import PDFviewer from './components/PDFviewer';
-import { Card } from '@mui/material';
+import { Card, Button } from '@mui/material';
 import { FileContext } from './fileDetails';
+import { api } from '../api';
+import { useUser, useSignOut, useFetch } from "@gadgetinc/react";
+
 
 export default function App() {
+  
+  const [instructions, setInstructions] = useState('Test create Assistant from FE');
+  const [model, setModel] = useState('gpt-3.5-turbo-1106');
+  // This is a copy of the useFetch from doc-inspector front-end
+  // Should be modified to correctly create an assistant
+  const [{ data, error, fetching }, create] = useFetch("/assistants",
+  {
+    method: "POST",
+  });
+
+  useEffect(() => {
+    data && console.log(`Data.message: ${data}`);
+  }, [data]);
 
   const { file } = useContext(FileContext);
 
@@ -22,6 +37,9 @@ export default function App() {
   return (
       <div className='flex flex-row'>
         <div className='flex flex-col stretch items-center mx-auto w-full min-h-screen max-w-3xl py-24 gap-4'>
+          <div className="w-full">
+            <Button variant="outlined" onClick={() => {create({body: JSON.stringify({ instructions: instructions, model: model })})}}>Create an Assistant</Button>
+          </div>
           <div className='grid sm:grid-cols-2 gap-4 w-full'>
             <FileCard type='pdf' />
             <FileCard type='md' />
@@ -49,7 +67,7 @@ export default function App() {
           </form>
         </div>
         <div>
-          {/* <PDFviewer file={file.pdf} /> */}
+          {/* <PDFparser file={file.pdf} /> */}
         </div>
       </div>
   );
