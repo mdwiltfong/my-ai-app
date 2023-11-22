@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Provider } from '@gadgetinc/react';
 import { api } from '../api';
-import { FileProvider } from './fileDetails';
+import { ContextProvider } from './contexts/appDetails';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,9 +16,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <FileProvider>
+        <ContextProvider>
           <Provider api={api}>{children}</Provider>
-        </FileProvider>
+        </ContextProvider>
       </body>
     </html>
   );

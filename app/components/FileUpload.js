@@ -1,20 +1,22 @@
 'use client';
 import { useState, useContext, useEffect } from 'react';
-import { FileContext } from '../fileDetails';
-import { useAction } from '@gadgetinc/react';
+import { AppContext } from '../contexts/appDetails';
+import { useAction, useFetch } from '@gadgetinc/react';
 import { api } from '../../api';
 import { Button, Typography } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
+import { OpenAi } from 'openai';
 
 export default function FileUpload({ type }) {
-  const { file, setFile } = useContext(FileContext);
+  const { file, setFile, assistant } = useContext(AppContext);
   const [newUpload, setNewUpload] = useState(true);
   const [{ data, error, fetching }, create] = useAction(api.document.create);
-  const filetype = `.${type}`;
 
+  const filetype = `.${type}`;
+  const role = type === 'md' ? 'template' : 'resource';
 
   // useEffect(() => {
   //   console.log(file[type])
@@ -23,7 +25,7 @@ export default function FileUpload({ type }) {
   // }, [file]);
 
   const handleFileChange = (e) => {
-    const singleFile = e.target.files[0]
+    const singleFile = e.target.files[0];
     if (singleFile) {
       console.log(singleFile);
       setFile({ ...file, [type]: singleFile });
@@ -31,12 +33,21 @@ export default function FileUpload({ type }) {
     if (type === 'md') {
       const reader = new FileReader();
       reader.onload = async (e) => {
-        setFile({...file, template: e.target.result});
+        setFile({ ...file, template: e.target.result });
         console.log(file.template);
       };
       reader.readAsText(singleFile);
     }
   };
+
+  // Trying useFetch instead of useAction to upload document
+  // const [{ data, error, fetching }, create] = useFetch('/document', {
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   method: 'POST',
+  //   json: true,
+  // });
 
   const handleUploadClick = async () => {
     if (!file[type]) {
@@ -45,9 +56,12 @@ export default function FileUpload({ type }) {
 
     try {
       setNewUpload(false);
+      console.log(`Uploading ${type} file with role ${role} and assistant ${assistant.id}`);
       await create({
-        file: {
-          file: file[type],
+        file: { file: file[type] },
+        role: role,
+        assistant: {
+          _link: assistant.assistant.id,
         },
       });
     } catch (error) {
@@ -91,7 +105,9 @@ export default function FileUpload({ type }) {
 
       {/* File name - only show before uploading */}
       <div className='flex flex-row flex-nowrap my-2 w-full justify-center items-center'>
-        <p>{file[type] && !fetching && newUpload === true && file[type].name}</p>{' '}
+        <p>
+          {file[type] && !fetching && newUpload === true && file[type].name}
+        </p>{' '}
         {file[type] && !fetching && newUpload === true && (
           <a
             className='cursor-pointer font-bold text-red-800 py-1 px-2 ml-2'
