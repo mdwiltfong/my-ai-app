@@ -1,5 +1,5 @@
 'use client';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useFetch } from '@gadgetinc/react';
 import { Button } from '@mui/material';
 import { AppContext } from '../contexts/appDetails';
@@ -37,20 +37,6 @@ export default function CreateAssistant() {
     }
   );
 
-  const createThread = async () => {
-    try {
-      const response = await addThread({
-        body: JSON.stringify({
-          instructions: instructions,
-        }),
-      });
-      console.log(response);
-      setThread(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const createAssistant = async () => {
     try {
       const response = await addAssistant({
@@ -60,6 +46,20 @@ export default function CreateAssistant() {
       });
       console.log(response);
       setAssistant(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createThread = async () => {
+    try {
+      const response = await addThread({
+        body: JSON.stringify({
+          instructions: instructions,
+        }),
+      });
+      console.log(response);
+      setThread(response);
     } catch (error) {
       console.log(error);
     }

@@ -22,13 +22,12 @@ export default function FileUpload({ type }) {
     const singleFile = e.target.files[0];
     if (singleFile) {
       console.log(singleFile);
-      setFile({ ...file, [type]: singleFile });
+      setFile((prevFile) => ({ ...file, [type]: singleFile }));
     }
     if (type === 'md') {
       const reader = new FileReader();
       reader.onload = async (e) => {
-        setFile({ ...file, template: e.target.result });
-        console.log(file.template);
+        setFile((prevFile) => ({ ...prevFile, template: e.target.result }));
       };
       reader.readAsText(singleFile);
     }

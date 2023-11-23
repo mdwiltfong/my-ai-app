@@ -5,9 +5,9 @@ import { AppContext } from '../contexts/appDetails';
 import Message from './Message';
 
 export default function Thread() {
-
   const { thread } = useContext(AppContext);
   const [messages, setMessages] = useState([]);
+  const [run, setRun] = useState(null);
   const [input, setInput] = useState('');
   const handleInputChange = (e) => setInput(e.target.value);
 
@@ -25,29 +25,48 @@ export default function Thread() {
   */
 
   const [{ messageData, messageError, messageFetching }, addMessage] = useFetch(
-    `/threads/message`,
+    `/messages/${thread?.thread?.id}`,
+    {
+      body: JSON.stringify({ message: input }),
+      method: 'POST',
+      // json: true,
+    }
+  );
+
+  const [{ threadData, threadError, threadFetching }, updateThread] = useFetch(
+    `/openAiRuns`,
     {
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        thread_id: thread?.thread?.id,
-        message: input,
+        runId: run,
+        threadId: thread?.thread?.id,
       }),
-      method: 'POST',
+      method: 'GET',
       json: true,
     }
   );
 
+  const getMessages = async () => {
+    try {
+      const response = await fetch(`/threads/${thread?.thread?.id}`);
+      const data = await response.json();
+      console.log(data);
+      setMessages(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessages([...messages, { role: 'user', content: input }]);
-
     try {
       const response = await addMessage({
         body: JSON.stringify({
-          thread_id: thread?.thread?.id,
-          message: input,
+          runId: run,
+          threadId: thread?.thread?.id,
         }),
       });
       console.log(response);

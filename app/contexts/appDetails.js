@@ -4,18 +4,16 @@ const AppContext = createContext();
 
 const ContextProvider = (props) => {
   const [file, setFile] = useState({ pdf: '', md: '' });
-  const [assistant, setAssistant] = useState({});
-  const [thread, setThread] = useState({});
 
-  const mockAssistantState = {assistant:  
-    {
-      createdAt: "2023-11-22T04:16:16.114Z",
-      id: "1135",
-      instructions: "Test create Assistant from FE",
-      name: "DocInspector",
-      openAiId: "asst_VzXvKPd8PSTy3i8YMY8Muhw6",
-      updatedAt: "2023-11-22T04:16:19.036Z",
-    }
+  const mockAssistantState = {
+    assistant: {
+      createdAt: '2023-11-22T04:16:16.114Z',
+      id: '1135',
+      instructions: 'Test create Assistant from FE',
+      name: 'DocInspector',
+      openAiId: 'asst_VzXvKPd8PSTy3i8YMY8Muhw6',
+      updatedAt: '2023-11-22T04:16:19.036Z',
+    },
   };
 
   const mockThreadState = {
@@ -27,6 +25,9 @@ const ContextProvider = (props) => {
       updatedAt: '2023-11-22T06:56:09.567Z',
     },
   };
+
+  const [assistant, setAssistant] = useState(mockAssistantState);
+  const [thread, setThread] = useState(mockThreadState);
 
   const value = useMemo(
     () => ({ file, setFile, assistant, setAssistant, thread, setThread }),
