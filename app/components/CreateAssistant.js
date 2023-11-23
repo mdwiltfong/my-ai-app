@@ -1,3 +1,4 @@
+'use client';
 import { useState, useContext } from 'react';
 import { useFetch } from '@gadgetinc/react';
 import { Button } from '@mui/material';

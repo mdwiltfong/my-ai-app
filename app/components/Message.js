@@ -1,3 +1,4 @@
+'use client';
 import { Paper, Typography } from '@mui/material';
 
 export default function Message({ role, content }) {
