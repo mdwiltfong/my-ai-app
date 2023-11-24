@@ -33,15 +33,6 @@ export default function FileUpload({ type }) {
     }
   };
 
-  // Trying useFetch instead of useAction to upload document
-  // const [{ data, error, fetching }, create] = useFetch('/document', {
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   method: 'POST',
-  //   json: true,
-  // });
-
   const handleUploadClick = async () => {
     if (!file[type]) {
       return;
@@ -79,7 +70,7 @@ export default function FileUpload({ type }) {
   return (
     <Card sx={{ padding: 3, backgroundColor: '#FCFCFC', flexGrow: 0 }}>
       <div className='flex flex-col gap-2 mb-4 items-center'>
-        <Typography>Upload a {type} file</Typography>
+        <p>Upload a {type} file</p>
 
         {/* Upload button */}
         <Button
