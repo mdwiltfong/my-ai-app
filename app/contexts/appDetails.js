@@ -3,7 +3,22 @@ import { useState, createContext, useMemo } from 'react';
 const AppContext = createContext();
 
 const ContextProvider = (props) => {
-  const [file, setFile] = useState({ pdf: '', md: '' });
+  const mockTemplateState = `# Legal Brief Template
+
+## Title Page
+
+**IN THE [Court Name]**
+
+**Case No.:** [Insert Case Number]
+
+**[Plaintiff's Name], Plaintiff,**
+`;
+
+  const [file, setFile] = useState({
+    pdf: '',
+    md: '',
+    template: mockTemplateState,
+  });
 
   const mockAssistantState = {
     assistant: {

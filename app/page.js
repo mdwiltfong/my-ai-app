@@ -1,7 +1,8 @@
 import CreateAssistant from './components/CreateAssistant';
 import FileUpload from './components/FileUpload';
-import Template from './components/Template';
 import Thread from './components/Thread';
+import PDFdownload from './components/PDFdownload';
+import { Paper } from '@mui/material';
 
 export default function App() {
   return (
@@ -17,7 +18,9 @@ export default function App() {
         </div>
       </div>
       <div className='flex flex-col items-center md:w-[75%] pb-24 mx-auto'>
-        <Template />
+        <Paper className='p-4 my-4 w-full'>
+          <PDFdownload />
+        </Paper>
       </div>
     </>
   );

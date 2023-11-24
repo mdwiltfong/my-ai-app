@@ -11,19 +11,6 @@ export default function Thread() {
   const [input, setInput] = useState('');
   const handleInputChange = (e) => setInput(e.target.value);
 
-  /* Copilot suggested:
-  const sendMessage = async (userMessage) => {
-    // Add user message to state
-    setMessages([...messages, { role: 'user', content: userMessage }]);
-    
-    // Send message to your server or directly to OpenAI (not recommended)
-    const response = await axios.post('/api/message', { message: userMessage });
-    
-    // Add OpenAI response to state
-    setMessages(prev => [...prev, { role: 'assistant', content: response.data }]);
-  };
-  */
-
   const [{ messageData, messageError, messageFetching }, addMessage] = useFetch(
     `/messages/${thread?.thread?.id}`,
     {
