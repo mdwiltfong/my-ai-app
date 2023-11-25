@@ -1,10 +1,14 @@
+'use client';
 import CreateAssistant from './components/CreateAssistant';
 import FileUpload from './components/FileUpload';
 import Thread from './components/Thread';
 import PDFdownload from './components/PDFdownload';
 import { Paper } from '@mui/material';
+import { AppContext } from './contexts/appDetails';
+import { useContext } from 'react';
 
 export default function App() {
+  const { file } = useContext(AppContext);
   return (
     <>
       <div className='flex flex-row justify-center gap-4'>
@@ -17,11 +21,13 @@ export default function App() {
           <Thread />
         </div>
       </div>
-      {/* <div className='flex flex-col items-center md:w-[75%] pb-24 mx-auto'>
-        <Paper className='p-4 my-4 w-full'>
-          <PDFdownload />
-        </Paper>
-      </div> */}
+      {file.md && (
+        <div className='flex flex-col items-center md:w-[75%] pb-24 mx-auto'>
+          <Paper className='p-4 my-4 w-full flex flex-col'>
+            <PDFdownload />
+          </Paper>
+        </div>
+      )}
     </>
   );
 }

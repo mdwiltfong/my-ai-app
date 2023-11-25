@@ -34,7 +34,7 @@ const markdownToJSX = (markdown) => {
     } else if (line.trim() === '') {
       jsxContent.push(
         <Text key={index} style={styles.newLine}>
-          {'\n'}
+          {' '}
         </Text>
       );
     } else {
@@ -86,20 +86,24 @@ const PDFdownload = () => {
     <>
       <MyDocument />
 
-      {/* <PDFDownloadLink
+      <PDFDownloadLink
         document={<MyDocument />}
         fileName={`DocInspector_${filename}.pdf`}
+        className="self-end"
       >
         {({ blob, url, loading, error }) =>
           loading ? (
             'Loading document...'
           ) : (
-            <Button variant='contained' startIcon={<CloudDownloadIcon />}>
+            <Button
+              variant="outlined"
+              startIcon={<CloudDownloadIcon />}
+            >
               Download PDF
             </Button>
           )
         }
-      </PDFDownloadLink> */}
+      </PDFDownloadLink>
     </>
   );
 };
