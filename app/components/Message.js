@@ -1,5 +1,5 @@
 'use client';
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 export default function Message({ role, content }) {
   const bgColour = role === 'user' ? '#0B93F6' : '#E5E5EA';

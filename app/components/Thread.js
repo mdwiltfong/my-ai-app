@@ -51,42 +51,48 @@ export default function Thread() {
     }
   );
 
-  useEffect(() => {
-    const checkRunStatus = async () => {
-      let updatedStatus = await getRunStatus();
-      let attempts = 0;
-      while (updatedStatus?.runStatus !== 'completed' && attempts < 100) {
-        console.log('Checking run status...');
-        console.log(updatedStatus);
-        updatedStatus = await getRunStatus();
-        attempts++;
-      }
-      console.log(`Made ${attempts} attempts to check run status`);
-      if (updatedStatus?.runStatus === 'completed') {
-        console.log('Looking for new messages...');
-        try {
-          const newThread = await updateThread();
-          console.log('New thread');
-          console.log(newThread);
-          if (newThread?.messages?.body?.data) {
-            const newMessages = newThread.messages.body.data.map((item) => ({
-              role: item.role,
-              content: item.content[0].text.value,
-            }));
-            console.log('New messages found:');
-            console.log(newMessages);
-            setMessages(newMessages);
-          }
-        } catch (error) {
-          console.error('Failed to update thread:', error);
+  const checkRunStatus = async () => {
+    let updatedStatus = await getRunStatus();
+    let attempts = 0;
+    while (updatedStatus?.runStatus !== 'completed' && attempts < 100) {
+      console.log('Checking run status...');
+      console.log(updatedStatus);
+      updatedStatus = await getRunStatus();
+      attempts++;
+    }
+    console.log(`Made ${attempts} attempts to check run status`);
+    if (updatedStatus?.runStatus === 'completed') {
+      console.log('Looking for new messages...');
+      try {
+        const newThread = await updateThread();
+        console.log('New thread');
+        console.log(newThread);
+        if (newThread?.messages?.body?.data) {
+          const newMessages = newThread.messages.body.data.map((item) => ({
+            role: item.role,
+            content: item.content[0].text.value,
+          }));
+          console.log('New messages found:');
+          console.log(newMessages);
+          setMessages(newMessages);
         }
+      } catch (error) {
+        console.error('Failed to update thread:', error);
       }
-      setWaiting(false);
-      inputRef.current.focus();
-    };
+    } else {
+      console.log(
+        `Run did not complete. Run Status: ${updatedStatus?.runStatus}`
+      );
+    }
+    setWaiting(false);
+    inputRef.current.focus();
+  };
+
+  useEffect(() => {
     if (runExternalId) {
       checkRunStatus();
     }
+    inputRef.current.focus();
   }, [runExternalId, getRunStatus, updateThread]);
 
   useEffect(() => {
@@ -124,6 +130,14 @@ export default function Thread() {
         ) : (
           <p>Upload a PDF document & Markdown file to begin</p>
         )}
+        {thread && file.uploaded.pdf && file.uploaded.md ? (
+          <Message
+            role='system'
+            content={`Hi there! What would you like to know about ${file.pdf.name}?`}
+          />
+        ) : (
+          ''
+        )}
       </div>
       <form
         role='form'
@@ -135,7 +149,11 @@ export default function Thread() {
           value={input}
           aria-label='Interact-with-AI'
           disabled={waiting || !assistant || !file.pdf || !file.md || !thread}
-          placeholder={thread ? '' : 'Ask a question...'}
+          placeholder={
+            thread && file.uploaded.pdf && file.uploaded.md
+              ? 'Ask a question...'
+              : ''
+          }
           onChange={handleInputChange}
           ref={inputRef}
         />

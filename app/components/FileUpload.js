@@ -21,7 +21,7 @@ export default function FileUpload({ type }) {
     const singleFile = e.target.files[0];
     if (singleFile) {
       console.log(singleFile);
-      setFile((prevFile) => ({ ...file, [type]: singleFile }));
+      setFile((prevFile) => ({ ...prevFile, [type]: singleFile }));
     }
     if (type === 'md') {
       const reader = new FileReader();
@@ -49,6 +49,7 @@ export default function FileUpload({ type }) {
           _link: assistant.assistant.id,
         },
       });
+      setFile((prevFile) => ({ ...prevFile, uploaded: { ...prevFile.uploaded, [type]: true } }));
     } catch (error) {
       console.log(error);
     }

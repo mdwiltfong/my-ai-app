@@ -18,6 +18,10 @@ const ContextProvider = (props) => {
     pdf: '',
     md: '',
     template: '',
+    uploaded: {
+      pdf: false,
+      md: false,
+    }
   });
 
   const mockAssistantState = {
