@@ -8,7 +8,7 @@ import { LoadingButton } from '@mui/lab';
 
 export default function Thread() {
   const { thread } = useContext(AppContext);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([{ role: 'user', content: 'Hello from the user'}, { role: 'assistant', content: 'Hello from the assistant'}]);
   const [run, setRun] = useState(null);
   const [waiting, setWaiting] = useState(false);
   const [input, setInput] = useState('');
@@ -22,6 +22,7 @@ export default function Thread() {
       },
       method: 'POST',
       json: true,
+      sendImmediately: false,
     }
   );
 
@@ -32,6 +33,7 @@ export default function Thread() {
         'Content-Type': 'application/json',
       },
       method: 'GET',
+      sendImmediately: false,
     }
   );
 
@@ -42,14 +44,27 @@ export default function Thread() {
         'Content-Type': 'application/json',
       },
       method: 'GET',
+      json: true,
+      // sendImmediately: false,
     }
   );
 
-    useEffect(() => {
-      runData && console.log(runData);
-      threadData && console.log(threadData);
-      messageData && console.log(messageData);
-    }, [runData, threadData, messageData]);
+  useEffect(() => {
+    if (threadData) {
+      const newMessages = threadData.messages.body.data.map((item) => ({
+        role: item.role,
+        content: item.content[0].text.value,
+      }));
+      console.log(newMessages);
+      setMessages(newMessages);
+    }
+  }, [threadData]);
+
+  // useEffect(() => {
+  //   runData && console.log(`Run data: ${runData}`);
+  //   threadData && console.log(`Thread data: ${threadData}`);
+  //   messageData && console.log(`Message data: ${messageData}`);
+  // }, [runData, threadData, messageData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,25 +76,26 @@ export default function Thread() {
       });
       setInput('');
       console.log(response);
-      setRun(response.run);
+      let newRun = await response.run;
+      setRun(newRun);
+      console.log('Run: ', newRun);
       let count = 1;
-      while (run?.status !== 'completed' && count < 20) {
+      while (newRun?.status !== 'completed' || newRun?.status !== 'failed') {
         const updatedStatus = await getRunStatus();
         console.log(updatedStatus);
-        if (updatedStatus.run !== null) {
-          setRun(updatedStatus.run);
-        }
+        newRun = updatedStatus.run;
+        setRun(newRun);
         console.log(`Checked ${count} times`);
         count++;
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
-      if (data.run !== null && data.run.status === 'completed') {
-        const newThread = await updateThread();
-        console.log('Updated thread', newThread);
-        setMessages([...messages, newThread.messages.body.data.content.text.value]);
-      } else {
-        console.log(`Run check failed: Status: ${data.run.status}`);
-      }
+      // if (newRun !== null && newRun.status === 'completed') {
+      const newThread = await updateThread();
+      console.log('Updated thread', newThread);
+      setMessages(newThread);
+      // } else {
+      //   console.log(`Run check failed: Status: ${newRun.status}`);
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -109,13 +125,12 @@ export default function Thread() {
           onChange={handleInputChange}
         />
         {waiting ? (
-          <LoadingButton loading loadingPosition='start' variant='outlined' />
+          <LoadingButton loading variant='outlined' />
         ) : (
           <Button
             component='label'
             variant='contained'
             disabled={waiting}
-            className='bg-green-700 hover:bg-green-800'
             onClick={handleSubmit}
           >
             Send
