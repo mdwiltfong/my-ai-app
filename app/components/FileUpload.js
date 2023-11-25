@@ -1,14 +1,13 @@
 'use client';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { AppContext } from '../contexts/appDetails';
-import { useAction, useFetch } from '@gadgetinc/react';
+import { useAction } from '@gadgetinc/react';
 import { api } from '../../api';
-import { Button, Typography, Card } from '@mui/material';
+import { Button, Card } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
-import { OpenAi } from 'openai';
 
 export default function FileUpload({ type }) {
   const { file, setFile, assistant } = useContext(AppContext);

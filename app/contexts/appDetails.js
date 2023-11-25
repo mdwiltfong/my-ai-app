@@ -41,8 +41,8 @@ const ContextProvider = (props) => {
     },
   };
 
-  const [assistant, setAssistant] = useState(mockAssistantState);
-  const [thread, setThread] = useState(mockThreadState);
+  const [assistant, setAssistant] = useState({});
+  const [thread, setThread] = useState({});
 
   const value = useMemo(
     () => ({ file, setFile, assistant, setAssistant, thread, setThread }),

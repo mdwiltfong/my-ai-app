@@ -8,10 +8,11 @@ import { LoadingButton } from '@mui/lab';
 
 export default function Thread() {
   const { thread } = useContext(AppContext);
-  const [messages, setMessages] = useState([
+  const mockMessages = [
     { role: 'user', content: 'Hello from the user' },
     { role: 'assistant', content: 'Hello from the assistant' },
-  ]);
+  ];
+  const [messages, setMessages] = useState([]);
   const [runExternalId, setRunExternalId] = useState('');
   const [waiting, setWaiting] = useState(false);
   const [input, setInput] = useState('');
@@ -51,7 +52,7 @@ export default function Thread() {
     const checkRunStatus = async () => {
       let updatedStatus = await getRunStatus();
       let attempts = 0;
-      while (updatedStatus?.runStatus !== 'completed' && attempts < 20) {
+      while (updatedStatus?.runStatus !== 'completed' && attempts < 50) {
         console.log('Checking run status...');
         console.log(updatedStatus);
         updatedStatus = await getRunStatus();
@@ -59,20 +60,18 @@ export default function Thread() {
       }
       console.log(`Made ${attempts} attempts to check run status`);
       if (updatedStatus?.runStatus === 'completed') {
-        console.log('Looking for new messages...')
+        console.log('Looking for new messages...');
         try {
           const newThread = await updateThread();
-          console.log('New thread')
-          console.log(newThread)
+          console.log('New thread');
+          console.log(newThread);
           if (newThread?.messages?.body?.data) {
-            const newMessages = newThread.messages.body.data.map(
-              (item) => ({
-                role: item.role,
-                content: item.content[0].text.value,
-              })
-            );
-            console.log('New messages found:')
-            console.log(newMessages)
+            const newMessages = newThread.messages.body.data.map((item) => ({
+              role: item.role,
+              content: item.content[0].text.value,
+            }));
+            console.log('New messages found:');
+            console.log(newMessages);
             setMessages(newMessages);
           }
         } catch (error) {
@@ -88,7 +87,7 @@ export default function Thread() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setWaiting(true);
-    setMessages([...messages, { role: 'user', content: input }]);
+    setMessages([{ role: 'user', content: input }, ...messages]);
     try {
       const response = await addMessage({
         body: JSON.stringify({ message: input }),
@@ -101,9 +100,11 @@ export default function Thread() {
     setWaiting(false);
   };
 
+const tailwind = ' my-4 content-end align-bottom grow flex flex-col-reverse justify-end gap-2 w-full overflow-auto h-96 bg-gray-100 rounded-lg p-4 border border-gray-300'
+
   return (
     <>
-      <div className='whitespace-pre-wrap my-4 content-end align-bottom grow flex flex-col justify-end gap-2 align-start w-full overflow-scroll max-h-96 bg-gray-100 rounded-lg p-4 border border-gray-300'>
+      <div className='flex flex-col-reverse overflow-scroll h-96 whitespace-pre-wrap bg-gray-100 rounded-lg p-4 border border-gray-300 w-full'>
         {messages ? (
           messages.map((msg, index) => (
             <Message key={index} role={msg.role} content={msg.content} />
