@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useFetch } from '@gadgetinc/react';
 import { AppContext } from '../contexts/appDetails';
 import Message from './Message';
@@ -17,6 +17,8 @@ export default function Thread() {
   const [runExternalId, setRunExternalId] = useState('');
   const [waiting, setWaiting] = useState(false);
   const [input, setInput] = useState('');
+  1;
+  const inputRef = useRef();
 
   const handleInputChange = (e) => setInput(e.target.value);
 
@@ -79,30 +81,37 @@ export default function Thread() {
           console.error('Failed to update thread:', error);
         }
       }
+      setWaiting(false);
+      inputRef.current.focus();
     };
     if (runExternalId) {
       checkRunStatus();
     }
-    setWaiting(false);
   }, [runExternalId, getRunStatus, updateThread]);
 
+  useEffect(() => {
+    if (!waiting) {
+      inputRef.current.focus();
+    }
+  }, [waiting]);
+
   const handleSubmit = async (e) => {
+    if (!input) return;
     e.preventDefault();
+    const newMessage = input;
+    setInput('');
     setWaiting(true);
-    setMessages([{ role: 'user', content: input }, ...messages]);
+    setMessages([{ role: 'user', content: newMessage }, ...messages]);
     try {
       const response = await addMessage({
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: newMessage }),
       });
-      setInput('');
       setRunExternalId(response?.run?.externalId);
     } catch (error) {
       console.error(error);
     }
+    setInput('');
   };
-
-  const tailwind =
-    ' my-4 content-end align-bottom grow flex flex-col-reverse justify-end gap-2 w-full overflow-auto h-96 bg-gray-100 rounded-lg p-4 border border-gray-300';
 
   return (
     <>
@@ -124,12 +133,14 @@ export default function Thread() {
         <input
           className='w-full max-w-md border border-gray-300 rounded shadow-xl p-2 dark:text-black'
           value={input}
-          aria-label="Interact-with-AI"
+          aria-label='Interact-with-AI'
+          disabled={waiting}
           placeholder='Ask a question...'
           onChange={handleInputChange}
+          ref={inputRef}
         />
         {waiting ? (
-          <LoadingButton loading variant='outlined' />
+          <LoadingButton loading />
         ) : (
           <Button
             component='label'
