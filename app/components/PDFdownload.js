@@ -13,13 +13,6 @@ import {
 } from '@react-pdf/renderer';
 import { Button } from '@mui/material';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import { Oswald } from 'next/font/google';
-
-const oswald = Oswald({
-  subsets: ['latin'],
-  variable: '--font-oswald',
-  display: 'swap',
-})
 
 const markdownToJSX = (markdown) => {
   const lines = markdown.split('\n');
@@ -27,23 +20,47 @@ const markdownToJSX = (markdown) => {
 
   lines.forEach((line, index) => {
     if (line.startsWith('# ')) {
-      jsxContent.push(<Text key={index} style={styles.h1}>{line.substring(2)}</Text>);
+      jsxContent.push(
+        <Text key={index} style={styles.h1}>
+          {line.substring(2)}
+        </Text>
+      );
     } else if (line.startsWith('## ')) {
-      jsxContent.push(<Text key={index} style={styles.h2}>{line.substring(3)}</Text>);
+      jsxContent.push(
+        <Text key={index} style={styles.h2}>
+          {line.substring(3)}
+        </Text>
+      );
     } else if (line.trim() === '') {
-      jsxContent.push(<Text key={index} style={styles.newLine}>{'\n'}</Text>);
+      jsxContent.push(
+        <Text key={index} style={styles.newLine}>
+          {'\n'}
+        </Text>
+      );
     } else {
       let segments = line.split(/(\*\*.*?\*\*|\*.*?\*)/g);
       let formattedLine = segments.map((segment, segmentIndex) => {
         if (segment.startsWith('**')) {
-          return <Text key={segmentIndex} style={styles.bold}>{segment.slice(2, -2)}</Text>;
+          return (
+            <Text key={segmentIndex} style={styles.bold}>
+              {segment.slice(2, -2)}
+            </Text>
+          );
         } else if (segment.startsWith('*')) {
-          return <Text key={segmentIndex} style={styles.italic}>{segment.slice(1, -1)}</Text>;
+          return (
+            <Text key={segmentIndex} style={styles.italic}>
+              {segment.slice(1, -1)}
+            </Text>
+          );
         } else {
           return segment;
         }
       });
-      jsxContent.push(<Text key={index} style={styles.p}>{formattedLine}</Text>);
+      jsxContent.push(
+        <Text key={index} style={styles.p}>
+          {formattedLine}
+        </Text>
+      );
     }
   });
 
@@ -69,7 +86,10 @@ const PDFdownload = () => {
     <>
       <MyDocument />
 
-      <PDFDownloadLink document={<MyDocument />} fileName={`DocInspector_${filename}.pdf`}>
+      {/* <PDFDownloadLink
+        document={<MyDocument />}
+        fileName={`DocInspector_${filename}.pdf`}
+      >
         {({ blob, url, loading, error }) =>
           loading ? (
             'Loading document...'
@@ -79,14 +99,14 @@ const PDFdownload = () => {
             </Button>
           )
         }
-      </PDFDownloadLink>
+      </PDFDownloadLink> */}
     </>
   );
 };
 
 Font.register({
   family: 'var(--font-oswald)',
-  src: 'https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf'
+  src: 'https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf',
 });
 
 const styles = StyleSheet.create({
@@ -97,6 +117,7 @@ const styles = StyleSheet.create({
   page: {
     display: 'flex',
     flexDirection: 'column',
+    padding: 10,
   },
   section: {
     display: 'flex',

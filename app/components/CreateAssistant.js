@@ -53,11 +53,7 @@ export default function CreateAssistant() {
 
   const createThread = async () => {
     try {
-      const response = await addThread({
-        body: JSON.stringify({
-          instructions: instructions,
-        }),
-      });
+      const response = await addThread();
       console.log(response);
       setThread(response);
     } catch (error) {

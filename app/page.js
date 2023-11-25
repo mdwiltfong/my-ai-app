@@ -17,11 +17,11 @@ export default function App() {
           <Thread />
         </div>
       </div>
-      <div className='flex flex-col items-center md:w-[75%] pb-24 mx-auto'>
+      {/* <div className='flex flex-col items-center md:w-[75%] pb-24 mx-auto'>
         <Paper className='p-4 my-4 w-full'>
           <PDFdownload />
         </Paper>
-      </div>
+      </div> */}
     </>
   );
 }

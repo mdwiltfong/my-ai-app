@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@gadget-client/doc-inspector": "^1.479.0",
+    "@gadget-client/doc-inspector": "^1.2026.0",
     "@gadgetinc/react": "^0.14.15",
     "@mui/icons-material": "^5.14.16",
     "@mui/lab": "^5.0.0-alpha.153",

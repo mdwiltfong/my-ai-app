@@ -17,7 +17,7 @@ const ContextProvider = (props) => {
   const [file, setFile] = useState({
     pdf: '',
     md: '',
-    template: mockTemplateState,
+    template: '',
   });
 
   const mockAssistantState = {
@@ -35,7 +35,7 @@ const ContextProvider = (props) => {
     thread: {
       __typename: 'Threads',
       createdAt: '2023-11-22T06:56:07.793Z',
-      id: '25',
+      id: '23',
       openAiId: 'thread_M5jt883us5nxG1mH9c4ENwPo',
       updatedAt: '2023-11-22T06:56:09.567Z',
     },
