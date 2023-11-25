@@ -5,6 +5,7 @@ import { AppContext } from '../contexts/appDetails';
 import Message from './Message';
 import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import TypingIndicator from './TypingIndicator';
 
 export default function Thread() {
   const { thread } = useContext(AppContext);
@@ -52,7 +53,7 @@ export default function Thread() {
     const checkRunStatus = async () => {
       let updatedStatus = await getRunStatus();
       let attempts = 0;
-      while (updatedStatus?.runStatus !== 'completed' && attempts < 50) {
+      while (updatedStatus?.runStatus !== 'completed' && attempts < 100) {
         console.log('Checking run status...');
         console.log(updatedStatus);
         updatedStatus = await getRunStatus();
@@ -82,6 +83,7 @@ export default function Thread() {
     if (runExternalId) {
       checkRunStatus();
     }
+    setWaiting(false);
   }, [runExternalId, getRunStatus, updateThread]);
 
   const handleSubmit = async (e) => {
@@ -97,14 +99,15 @@ export default function Thread() {
     } catch (error) {
       console.error(error);
     }
-    setWaiting(false);
   };
 
-const tailwind = ' my-4 content-end align-bottom grow flex flex-col-reverse justify-end gap-2 w-full overflow-auto h-96 bg-gray-100 rounded-lg p-4 border border-gray-300'
+  const tailwind =
+    ' my-4 content-end align-bottom grow flex flex-col-reverse justify-end gap-2 w-full overflow-auto h-96 bg-gray-100 rounded-lg p-4 border border-gray-300';
 
   return (
     <>
       <div className='flex flex-col-reverse overflow-scroll h-96 whitespace-pre-wrap bg-gray-100 rounded-lg p-4 border border-gray-300 w-full'>
+        {waiting && <TypingIndicator />}
         {messages ? (
           messages.map((msg, index) => (
             <Message key={index} role={msg.role} content={msg.content} />
@@ -121,6 +124,7 @@ const tailwind = ' my-4 content-end align-bottom grow flex flex-col-reverse just
         <input
           className='w-full max-w-md border border-gray-300 rounded shadow-xl p-2 dark:text-black'
           value={input}
+          aria-label="Interact-with-AI"
           placeholder='Ask a question...'
           onChange={handleInputChange}
         />

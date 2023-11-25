@@ -40,7 +40,7 @@ export default function FileUpload({ type }) {
     try {
       setNewUpload(false);
       console.log(
-        `Uploading ${type} file with role ${role} and assistant ${assistant.id}`
+        `Uploading ${type} file with role ${role} and assistant ${assistant.assistant.id}`
       );
       await create({
         file: { file: file[type] },

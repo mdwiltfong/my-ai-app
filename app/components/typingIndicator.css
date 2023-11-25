@@ -1,0 +1,62 @@
+.typing-indicator {
+  background-color: #E5E5EA;
+  will-change: transform;
+  justify-self: flex-start;
+  border-radius: 2rem 2rem 2rem 3px;
+  padding: 20px;
+  -webkit-animation: 3s bulge infinite ease-out;
+  animation: 3s bulge infinite ease-out;
+  height: 50px;
+}
+
+.typing-indicator span {
+  height: 15px;
+  width: 15px;
+  float: left;
+  margin: 0 1px;
+  background-color: #9E9EA1;
+  display: block;
+  border-radius: 50%;
+  opacity: 0.4;
+}
+
+.typing-indicator span:nth-of-type(1) {
+  -webkit-animation: 1.5s blink infinite 0.3333s;
+  animation: 1.5s blink infinite 0.3333s;
+}
+
+.typing-indicator span:nth-of-type(2) {
+  -webkit-animation: 1.5s blink infinite 0.6666s;
+  animation: 1.5s blink infinite 0.6666s;
+}
+
+.typing-indicator span:nth-of-type(3) {
+  -webkit-animation: 1.5s blink infinite 0.9999s;
+  animation: 1.5s blink infinite 0.9999s;
+}
+
+@-webkit-keyframes blink {
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes bulge {
+  50% {
+    -webkit-transform: scale(1.02);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes bulge {
+  50% {
+    -webkit-transform: scale(1.02);
+    transform: scale(1.02);
+  }
+}
