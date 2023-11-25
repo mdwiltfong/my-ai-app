@@ -8,63 +8,82 @@ import { LoadingButton } from '@mui/lab';
 
 export default function Thread() {
   const { thread } = useContext(AppContext);
-  const [messages, setMessages] = useState([{ role: 'user', content: 'Hello from the user'}, { role: 'assistant', content: 'Hello from the assistant'}]);
-  const [run, setRun] = useState(null);
+  const [messages, setMessages] = useState([
+    { role: 'user', content: 'Hello from the user' },
+    { role: 'assistant', content: 'Hello from the assistant' },
+  ]);
+  const [runExternalId, setRunExternalId] = useState('');
   const [waiting, setWaiting] = useState(false);
   const [input, setInput] = useState('');
+
   const handleInputChange = (e) => setInput(e.target.value);
 
-  const [{ messageData, messageError, messageFetching }, addMessage] = useFetch(
+  const [{ messageData }, addMessage] = useFetch(
     `/messages/${thread?.thread?.id}`,
     {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       method: 'POST',
       json: true,
       sendImmediately: false,
     }
   );
 
-  const [{ runData, runError, runFetching }, getRunStatus] = useFetch(
-    `/openAiRuns?runId=${run?.externalId}&threadId=${thread?.thread?.id}`,
+  const [{ runData }, getRunStatus] = useFetch(
+    `/openAiRuns?runId=${runExternalId}&threadId=${thread?.thread?.id}`,
     {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       method: 'GET',
       sendImmediately: false,
+      json: true,
     }
   );
 
-  const [{ threadData, threadError, threadFetching }, updateThread] = useFetch(
+  const [{ threadData }, updateThread] = useFetch(
     `/messages/${thread?.thread?.id}`,
     {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       method: 'GET',
       json: true,
-      // sendImmediately: false,
     }
   );
 
   useEffect(() => {
-    if (threadData) {
-      const newMessages = threadData.messages.body.data.map((item) => ({
-        role: item.role,
-        content: item.content[0].text.value,
-      }));
-      console.log(newMessages);
-      setMessages(newMessages);
+    const checkRunStatus = async () => {
+      let updatedStatus = await getRunStatus();
+      let attempts = 0;
+      while (updatedStatus?.runStatus !== 'completed' && attempts < 20) {
+        console.log('Checking run status...');
+        console.log(updatedStatus);
+        updatedStatus = await getRunStatus();
+        attempts++;
+      }
+      console.log(`Made ${attempts} attempts to check run status`);
+      if (updatedStatus?.runStatus === 'completed') {
+        console.log('Looking for new messages...')
+        try {
+          const newThread = await updateThread();
+          console.log('New thread')
+          console.log(newThread)
+          if (newThread?.messages?.body?.data) {
+            const newMessages = newThread.messages.body.data.map(
+              (item) => ({
+                role: item.role,
+                content: item.content[0].text.value,
+              })
+            );
+            console.log('New messages found:')
+            console.log(newMessages)
+            setMessages(newMessages);
+          }
+        } catch (error) {
+          console.error('Failed to update thread:', error);
+        }
+      }
+    };
+    if (runExternalId) {
+      checkRunStatus();
     }
-  }, [threadData]);
-
-  // useEffect(() => {
-  //   runData && console.log(`Run data: ${runData}`);
-  //   threadData && console.log(`Thread data: ${threadData}`);
-  //   messageData && console.log(`Message data: ${messageData}`);
-  // }, [runData, threadData, messageData]);
+  }, [runExternalId, getRunStatus, updateThread]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -75,36 +94,16 @@ export default function Thread() {
         body: JSON.stringify({ message: input }),
       });
       setInput('');
-      console.log(response);
-      let newRun = await response.run;
-      setRun(newRun);
-      console.log('Run: ', newRun);
-      let count = 1;
-      while (newRun?.status !== 'completed' || newRun?.status !== 'failed') {
-        const updatedStatus = await getRunStatus();
-        console.log(updatedStatus);
-        newRun = updatedStatus.run;
-        setRun(newRun);
-        console.log(`Checked ${count} times`);
-        count++;
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-      // if (newRun !== null && newRun.status === 'completed') {
-      const newThread = await updateThread();
-      console.log('Updated thread', newThread);
-      setMessages(newThread);
-      // } else {
-      //   console.log(`Run check failed: Status: ${newRun.status}`);
-      // }
+      setRunExternalId(response?.run?.externalId);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setWaiting(false);
   };
 
   return (
     <>
-      <div className='whitespace-pre-wrap my-4 content-end align-bottom grow flex flex-col justify-end gap-2 align-start w-full bg-gray-100 rounded-lg p-4 border border-gray-300'>
+      <div className='whitespace-pre-wrap my-4 content-end align-bottom grow flex flex-col justify-end gap-2 align-start w-full overflow-scroll max-h-96 bg-gray-100 rounded-lg p-4 border border-gray-300'>
         {messages ? (
           messages.map((msg, index) => (
             <Message key={index} role={msg.role} content={msg.content} />
