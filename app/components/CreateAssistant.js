@@ -6,11 +6,13 @@ import { AppContext } from '../contexts/appDetails';
 
 export default function CreateAssistant() {
 
+  const { assistant, setAssistant, thread, setThread, file } = useContext(AppContext);
+
   const [instructions, setInstructions] = useState(
-    'Test create Assistant from FE'
+    `"You are a helpful, friendly assistant.  With the document provided ${`with the filename ${file.pdf}` || ''}, you will help humans answer their questions about this document. You will not stray from the information in this document. If you do not know the answer, you will say so. If there is a request that is outside the context of this document you will inform the human that you can not answer the question. The only exception to this rule, is that the human may ask you fill in a template ${`following the format in the file ${file.pdf}` || ''} with some of the information from the document. You will not stray from the format of this template. If you can't find the information for the template, you will leave the area of the template blank.";`
+    //`You are a helpful, friendly assistant. With the document provided ${`with the filename ${file.pdf}` || ''}, you will help humans answer their questions about this document. You will not stray from the information in this document. If you do not know the answer, you will say so. If there is a request that is outside the context of this document you will inform the human that you can not answer the question.`
   );
 
-  const { assistant, setAssistant, thread, setThread } = useContext(AppContext);
 
   const [{ asstData, asstError, asstFetching }, addAssistant] = useFetch(
     '/assistants',

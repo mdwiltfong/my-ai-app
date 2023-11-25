@@ -8,7 +8,7 @@ import { LoadingButton } from '@mui/lab';
 import TypingIndicator from './TypingIndicator';
 
 export default function Thread() {
-  const { thread } = useContext(AppContext);
+  const { assistant, file, thread } = useContext(AppContext);
   const mockMessages = [
     { role: 'user', content: 'Hello from the user' },
     { role: 'assistant', content: 'Hello from the assistant' },
@@ -117,7 +117,7 @@ export default function Thread() {
     <>
       <div className='flex flex-col-reverse overflow-scroll h-96 whitespace-pre-wrap bg-gray-100 rounded-lg p-4 border border-gray-300 w-full'>
         {waiting && <TypingIndicator />}
-        {messages ? (
+        {assistant && file.pdf && file.md && thread ? (
           messages.map((msg, index) => (
             <Message key={index} role={msg.role} content={msg.content} />
           ))
@@ -134,8 +134,8 @@ export default function Thread() {
           className='w-full max-w-md border border-gray-300 rounded shadow-xl p-2 dark:text-black'
           value={input}
           aria-label='Interact-with-AI'
-          disabled={waiting}
-          placeholder='Ask a question...'
+          disabled={waiting || !assistant || !file.pdf || !file.md || !thread}
+          placeholder={thread ? '' : 'Ask a question...'}
           onChange={handleInputChange}
           ref={inputRef}
         />
@@ -145,7 +145,7 @@ export default function Thread() {
           <Button
             component='label'
             variant='contained'
-            disabled={waiting}
+            disabled={waiting || !assistant || !file.pdf || !file.md || !thread}
             onClick={handleSubmit}
           >
             Send
